@@ -46,11 +46,11 @@ public class ForwardLinked<T> implements Iterable<T> {
             head = head.next;
             tmp.item = null;
             tmp = null;
+            size--;
+            modCount++;
         } else {
             throw new NoSuchElementException();
         }
-        size--;
-        modCount++;
         return item;
     }
 
