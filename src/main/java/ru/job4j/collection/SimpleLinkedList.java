@@ -10,18 +10,20 @@ public class SimpleLinkedList<E> implements SimpleLinked<E> {
     private int size;
     private int modCount;
     private Node<E> head;
-    private Node<E> tail;
 
     @Override
     public void add(E value) {
         Node<E> newNode = new Node<>(value, null);
-        Node<E> last = tail;
-        tail = newNode;
-        if (last == null) {
-            head = newNode;
+        if (head != null) {
+            Node<E> l = head;
+            while (l.next != null) {
+                l = l.next;
+            }
+            l.next = newNode;
         } else {
-            last.next = newNode;
+            head = newNode;
         }
+
         modCount++;
         size++;
     }
@@ -45,15 +47,14 @@ public class SimpleLinkedList<E> implements SimpleLinked<E> {
     public Iterator<E> iterator() {
         int expectedModCount = modCount;
         return new Iterator<E>() {
-            int index;
-            Node<E> cursor;
+            Node<E> cursor = head;
 
             @Override
             public boolean hasNext() {
                 if (expectedModCount != modCount) {
                     throw new ConcurrentModificationException();
                 }
-                return index < size;
+                return cursor != null;
             }
 
             @Override
@@ -61,13 +62,9 @@ public class SimpleLinkedList<E> implements SimpleLinked<E> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                if (cursor == null) {
-                    cursor = head;
-                } else {
-                    cursor = cursor.next;
-                }
-                index++;
-                return cursor.item;
+                E item = cursor.item;
+                cursor = cursor.next;
+                return item;
             }
         };
     }
