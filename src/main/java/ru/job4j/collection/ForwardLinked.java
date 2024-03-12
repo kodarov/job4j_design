@@ -9,16 +9,17 @@ public class ForwardLinked<T> implements Iterable<T> {
     private int size;
     private int modCount;
     private Node<T> head;
-    private Node<T> tail;
 
     public void add(T value) {
         Node<T> newNode = new Node<>(value, null);
-        Node<T> last = tail;
-        tail = newNode;
-        if (last == null) {
+        if (head == null) {
             head = newNode;
         } else {
-            last.next = newNode;
+            Node<T> l = head;
+            while (l.next != null) {
+                l = l.next;
+            }
+            l.next = newNode;
         }
         modCount++;
         size++;
@@ -39,41 +40,32 @@ public class ForwardLinked<T> implements Iterable<T> {
     }
 
     public T deleteFirst() {
-        T item;
-        if (head != null) {
-            Node<T> tmp = head;
-            item = tmp.item;
-            head = head.next;
-            tmp.item = null;
-            tmp = null;
-            size--;
-            modCount++;
-        } else {
+        if (head == null) {
             throw new NoSuchElementException();
         }
-        return item;
-    }
-
-    public void addFirst(T value) {
-        Node<T> first = head;
-        head = new Node<>(value, first);
+        T item = head.item;
+        Node<T> h = head;
+        head = head.next;
+        h.item = null;
+        h.next = null;
+        h = null;
+        size--;
         modCount++;
-        size++;
+        return item;
     }
 
     @Override
     public Iterator<T> iterator() {
         int expectedModCount = modCount;
         return new Iterator<T>() {
-            int index;
-            Node<T> cursor;
+            Node<T> cursor = head;
 
             @Override
             public boolean hasNext() {
                 if (expectedModCount != modCount) {
                     throw new ConcurrentModificationException();
                 }
-                return index < size;
+                return cursor != null;
             }
 
             @Override
@@ -81,13 +73,9 @@ public class ForwardLinked<T> implements Iterable<T> {
                 if (!hasNext()) {
                     throw new NoSuchElementException();
                 }
-                if (cursor == null) {
-                    cursor = head;
-                } else {
-                    cursor = cursor.next;
-                }
-                index++;
-                return cursor.item;
+                T item = cursor.item;
+                cursor = cursor.next;
+                return item;
             }
         };
     }
