@@ -1,18 +1,22 @@
 package ru.job4j.iterator;
 
-import java.util.*;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 public class ListUtils {
 
     public static <T> void addBefore(List<T> list, int index, T value) {
         Objects.checkIndex(index, list.size());
-        list.add(index, value);
+        ListIterator<T> listIterator = list.listIterator(index);
+        listIterator.add(value);
     }
 
     public static <T> void addAfter(List<T> list, int index, T value) {
         Objects.checkIndex(index, list.size());
-        list.add(index + 1, value);
+        ListIterator<T> listIterator = list.listIterator(index + 1);
+        listIterator.add(value);
     }
 
     public static <T> void removeIf(List<T> list, Predicate<T> filter) {
@@ -34,8 +38,7 @@ public class ListUtils {
     }
 
     public static <T> void removeAll(List<T> list, List<T> elements) {
-        Set<T> setEl = new HashSet<>(elements);
-        Predicate<T> filter = setEl::contains;
+        Predicate<T> filter = elements::contains;
         removeIf(list, filter);
     }
 }
