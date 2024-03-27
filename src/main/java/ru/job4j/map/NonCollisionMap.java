@@ -23,8 +23,8 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
             expand();
         }
         boolean result = false;
-        int index = indexFor(hash(Objects.hashCode(key)));
-        if (table[index] == null) {
+        int index = getIndex(key);
+        if (isEmpty(key)) {
             table[index] = new MapEntry<>(key, value);
             count++;
             modCount++;
@@ -55,31 +55,29 @@ public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
     }
 
     private int getIndex(K key) {
-        int result = -1;
-        int index = indexFor(hash(Objects.hashCode(key)));
-        if (table[index] != null
-                && Objects.hashCode(key) == Objects.hashCode(table[index].key)
-                && Objects.equals(key, table[index].key)) {
-            result = index;
-        }
-        return result;
+        return indexFor(hash(Objects.hashCode(key)));
+    }
+
+    private boolean containsKey(K key) {
+        int index = getIndex(key);
+        return !isEmpty(key) && Objects.hashCode(key) == Objects.hashCode(table[index].key)
+                && Objects.equals(key, table[index].key);
+    }
+
+    private boolean isEmpty(K key) {
+        return table[getIndex(key)] == null;
     }
 
     @Override
     public V get(K key) {
-        V value = null;
-        int index = getIndex(key);
-        if (index >= 0) {
-            value = table[getIndex(key)].value;
-        }
-        return value;
+        return containsKey(key) ? table[getIndex(key)].value : null;
     }
 
     @Override
     public boolean remove(K key) {
         boolean result = false;
         int index = getIndex(key);
-        if (index >= 0) {
+        if (containsKey(key)) {
             table[index].value = null;
             table[index].key = null;
             table[index] = null;
