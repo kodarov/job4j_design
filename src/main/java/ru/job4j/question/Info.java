@@ -41,7 +41,9 @@ public class Info {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Info info = (Info) o;
         return added == info.added && changed == info.changed && deleted == info.deleted;
     }
@@ -53,10 +55,10 @@ public class Info {
 
     @Override
     public String toString() {
-        return "Info{" +
-               "added=" + added +
-               ", changed=" + changed +
-               ", deleted=" + deleted +
-               '}';
+        return "Info{"
+               + "added=" + added
+               + ", changed=" + changed
+               + ", deleted=" + deleted
+               + '}';
     }
 }
