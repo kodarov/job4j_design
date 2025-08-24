@@ -13,11 +13,7 @@ public class LogFilter {
     }
 
     public static void main(String[] args) {
-        LogFilter logFilter = new LogFilter("data/log.txt");
-        logFilter.filter().forEach(System.out::println);
-        logFilter.saveTo("data/out.txt");
-        logFilter.saveTextTo("data/out2.txt");
-
+        new LogFilter("data/log.txt").saveTo("data/404.txt");
     }
 
     public List<String> filter() {
@@ -36,20 +32,9 @@ public class LogFilter {
     }
 
     public void saveTo(String out) {
+        var data = filter();
         try (PrintWriter writer = new PrintWriter(new BufferedOutputStream(new FileOutputStream(out)))) {
-            for (String line : filter()) {
-                writer.printf("%s\n", line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void saveTextTo(String out) {
-        try (PrintWriter writer = new PrintWriter(new BufferedWriter(new FileWriter(out)))) {
-            for (String line : filter()) {
-                writer.printf("%s\n", line);
-            }
+            data.forEach(writer::println);
         } catch (IOException e) {
             e.printStackTrace();
         }
