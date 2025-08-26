@@ -19,10 +19,10 @@ public class Analysis {
                 if (lineArray.length != 2) {
                     continue;
                 }
-                if (sb.isEmpty() && (lineArray[0].equals("400") || lineArray[0].equals("500"))) {
+                if (sb.isEmpty() && ("400".equals(lineArray[0])) || "500".equals(lineArray[0])) {
                     sb.append(lineArray[1]).append(";");
                 }
-                if (!sb.isEmpty() && (lineArray[0].equals("200") || lineArray[0].equals("300"))) {
+                if (!sb.isEmpty() && ("200".equals(lineArray[0]) || "300".equals(lineArray[0]))) {
                     sb.append(lineArray[1]).append(";");
                     output.print(sb);
                     output.println();
