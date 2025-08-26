@@ -56,7 +56,9 @@ public class Config {
     }
 
     private void checkIncorrectLine(String[] lineArray) {
-        if (Objects.isNull(lineArray[0]) || lineArray[0].isEmpty() || lineArray[0].isBlank()) {
+        if (Objects.isNull(lineArray[0])
+            || lineArray[0].isBlank()
+            || lineArray[1].isBlank()) {
             throw new IllegalArgumentException();
         }
     }
