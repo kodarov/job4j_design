@@ -9,36 +9,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DuplicatesVisitor extends SimpleFileVisitor<Path> {
 
     private final Map<FileProperty, List<Path>> fileMap = new HashMap<>();
 
     public void printDuplicates() {
-        getDuplicates().forEach((k, v) -> {
-            System.out.println(k.getName() + " " + k.getSize() / (1024 * 1024) + " Mb");
-            v.forEach(System.out::println);
-        });
-    }
-
-    private Map<FileProperty, List<Path>> getDuplicates() {
-        return fileMap.entrySet().stream()
+        fileMap.entrySet().stream()
                 .filter(e -> e.getValue().size() > 1)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+                .forEach(e -> {
+                    System.out.printf("%s - %d B (%.2f Mb)%n",
+                            e.getKey().getName(),
+                            e.getKey().getSize(),
+                            e.getKey().getSize() / (1024 * 1024.0));
+                    e.getValue().forEach(System.out::println);
+                });
     }
 
     @Override
-    public FileVisitResult visitFile(Path file,
-                                     BasicFileAttributes attributes) throws IOException {
+    public FileVisitResult visitFile(Path file, BasicFileAttributes attributes) throws IOException {
         var fileProperty = new FileProperty(attributes.size(), file.getFileName().toString());
-        if (fileMap.containsKey(fileProperty)) {
-            fileMap.get(fileProperty).add(file.toAbsolutePath());
-        } else {
-            ArrayList<Path> paths = new ArrayList<>();
-            paths.add(file.toAbsolutePath());
-            fileMap.put(fileProperty, paths);
-        }
+        fileMap.computeIfAbsent(fileProperty, k -> new ArrayList<>()).add(file.toAbsolutePath());
         return super.visitFile(file, attributes);
     }
 }
