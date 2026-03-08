@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 public class Search {
 
@@ -18,8 +19,19 @@ public class Search {
         validateArgs(args);
         Path path = Paths.get(args[0]);
         String normalizedExtension = normalizeExtension(args[1]);
+        return search(path, p -> p.getFileName().toString().toLowerCase().endsWith(normalizedExtension));
+    }
+
+    public static List<Path> searchExclude(String root, String extension) throws IOException {
+        validateArgs(new String[]{root, extension});
+        Path path = Paths.get(root);
+        String normalizedExtension = normalizeExtension(extension);
+        return search(path, p -> !p.getFileName().toString().toLowerCase().endsWith(normalizedExtension));
+    }
+
+    private static List<Path> search(Path path, Predicate<Path> condition) throws IOException {
         validatePath(path);
-        var searcher = new SearchFiles(p -> p.getFileName().toString().toLowerCase().endsWith(normalizedExtension));
+        var searcher = new SearchFiles(condition);
         Files.walkFileTree(path, searcher);
         return searcher.getPaths();
     }
