@@ -1,46 +1,49 @@
-CREATE TABLE fauna
+CREATE TABLE countries
 (
-    id             SERIAL PRIMARY KEY,
-    name           TEXT,
-    avg_age        INT,
-    discovery_date DATE
+    id   SERIAL PRIMARY KEY,
+    name VARCHAR(255)
 );
 
-INSERT INTO fauna(name, avg_age, discovery_date)
-VALUES ('Кошка домашняя', 5475, DATE '1758-01-01'),
-       ('Собака домашняя', 4745, DATE '1758-01-01'),
-       ('Попугай жако', 18250, DATE '1758-01-01'),
-       ('Галапагосская черепаха', 36500, DATE '1827-01-01'),
-       ('Африканский саванный слон', 25550, DATE '1797-01-01'),
-       ('Майский жук западный', 365, DATE '1758-01-01'),
-       ('Тигровая акула', 9855, DATE '1822-01-01'),
-       ('Дельфин-белобочка', 9125, DATE '1766-01-01'),
-       ('Красная панда', 5110, DATE '1825-01-01'),
-       ('Китайская гигантская саламандра', 20075, DATE '1837-01-01'),
-       ('Лев', 5840, DATE '1758-01-01'),
-       ('Волк обыкновенный', 4745, DATE '1758-01-01'),
-       ('Бурый медведь', 9125, DATE '1758-01-01'),
-       ('Западная горилла', 12775, DATE '1847-01-01'),
-       ('Индийский павлин', 7300, DATE '1758-01-01'),
-       ('Императорский пингвин', 7300, DATE '1844-01-01'),
-       ('Тёмный тигровый питон', 9125, DATE '1820-01-01'),
-       ('Африканский страус', 14600, DATE '1758-01-01'),
-       ('Синий кит', 29200, DATE '1758-01-01'),
-       ('Белоголовый орлан', 9125, DATE '1766-01-01');
+CREATE TABLE cities
+(
+    id         SERIAL PRIMARY KEY,
+    name       VARCHAR(255),
+    country_id INTEGER REFERENCES countries (id)
+);
 
-SELECT *
-FROM fauna
-WHERE name ILIKE '%домашняя%';
+INSERT INTO countries(name)
+VALUES ('Россия'),
+       ('Германия'),
+       ('Франция'),
+       ('Испания');
 
-SELECT f.name, f.avg_age, f.discovery_date
-FROM fauna f
-WHERE avg_age > 10000
-  AND avg_age < 20000;
+INSERT INTO cities(name, country_id)
+VALUES ('Москва', 1),
+       ('Санкт-Петербург', 1),
+       ('Новосибирск', 1),
+       ('Берлин', 2),
+       ('Мюнхен', 2),
+       ('Гамбург', 2),
+       ('Париж', 3),
+       ('Лион', 3),
+       ('Марсель', 3),
+       ('Мадрид', 4),
+       ('Барселона', 4),
+       ('Валенсия', 4);
 
-SELECT *
-FROM fauna
-WHERE avg_age IS NULL;
+INSERT INTO cities(name)
+VALUES ('Минск'),
+       ('Киев'),
+       ('Астана');
 
-SELECT *
-FROM fauna
-WHERE discovery_date > '1950-01-01'
+SELECT ci.name AS Город, c.name AS Страна
+FROM cities ci
+         JOIN countries c ON ci.country_id = c.id;
+
+SELECT ci.name AS "Мой город", c.name AS "Мои страны"
+FROM cities AS ci
+         JOIN countries AS c ON ci.country_id = c.id;
+
+SELECT страны.name AS "Ваши страны", города.name AS "Ваши города"
+FROM countries AS страны
+         JOIN cities AS города ON города.country_id = страны.id
