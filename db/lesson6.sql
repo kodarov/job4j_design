@@ -112,5 +112,4 @@ HAVING COUNT(*) < 10;
 --8. Вывести все продукты и их тип.
 SELECT p.name, t.name
 FROM product p
-         JOIN type t on p.type_id = t.id
-
+         JOIN type t on p.type_id = t.id;
