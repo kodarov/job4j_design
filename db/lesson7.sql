@@ -104,7 +104,7 @@ FROM (SELECT *
       WHERE t.gender = 'м') b
          CROSS JOIN (SELECT *
                      FROM teens t
-                     WHERE t.gender = 'ж') g
+                     WHERE t.gender = 'ж') g;
 
 
 
