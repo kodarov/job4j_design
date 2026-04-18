@@ -51,13 +51,11 @@ VALUES ('product_1', 'producer_1', 8, 115),
 
 --функция для row
 CREATE
-    OR REPLACE FUNCTION posttax()
+    OR REPLACE FUNCTION before_func_tax()
     RETURNS trigger AS
 $$
 BEGIN
-    UPDATE products
-    SET price = price + price * 0.2
-    WHERE id = NEW.id;
+    NEW.price = NEW.price + NEW.price * 0.2;
     RETURN NEW;
 END;
 $$
@@ -65,10 +63,10 @@ $$
 
 -- триггер row уровня
 CREATE TRIGGER discount_trigger
-    AFTER INSERT
+    BEFORE INSERT
     ON products
     FOR EACH ROW
-EXECUTE PROCEDURE posttax();
+EXECUTE PROCEDURE before_func_tax();
 
 INSERT INTO products (name, producer, count, price)
 VALUES ('product_3', 'producer_3', 8, 115),
